@@ -18,7 +18,6 @@ public class Order extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column(columnDefinition = "DATE")
     private LocalDate orderDate;
 
     @ManyToOne

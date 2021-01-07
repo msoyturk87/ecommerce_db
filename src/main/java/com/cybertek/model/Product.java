@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,7 +46,7 @@ public class Product extends BaseEntity<Long>{
     @JoinTable(name = "product_sub_category_rel",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "sub_category_id"))
-    private List<SubCategory> subCategories;
+    private List<SubCategory> subCategories; // talk about this part for Set
 
     @ManyToMany
     @JoinTable(name = "product_attribute_value_rel",

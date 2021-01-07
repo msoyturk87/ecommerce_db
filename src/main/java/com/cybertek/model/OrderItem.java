@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -16,6 +17,8 @@ public class OrderItem extends BaseEntity<Long>{
 
 
     private Integer quantity;
+    private BigDecimal price;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
@@ -27,6 +30,8 @@ public class OrderItem extends BaseEntity<Long>{
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    private String productHistory;
 
 
 
