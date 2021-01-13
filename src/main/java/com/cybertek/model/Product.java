@@ -1,9 +1,11 @@
 package com.cybertek.model;
 
 import com.cybertek.enums.ProductCondition;
+import com.cybertek.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,8 +18,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "products")
+@Where(clause = "is_deleted=false")
 public class Product extends BaseEntity<Long>{
 
+    @Column(nullable = false)
     private String name;
 
     @Column(columnDefinition = "text")
@@ -33,6 +37,9 @@ public class Product extends BaseEntity<Long>{
 
     @Enumerated(EnumType.STRING)
     private ProductCondition productCondition;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "currency_id")

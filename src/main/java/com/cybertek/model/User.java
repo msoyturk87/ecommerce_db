@@ -1,10 +1,13 @@
 package com.cybertek.model;
 
+import com.cybertek.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
@@ -20,7 +23,8 @@ public class User extends BaseEntity<Long>{
 
     private LocalDate birthDate;
     // no need to columnDef as a DATE in this
-
+    @Enumerated(EnumType.STRING)
+    private Status status;
     private String phoneNumber;
     private String userName;
     private String email;

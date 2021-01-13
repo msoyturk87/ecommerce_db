@@ -4,6 +4,7 @@ import com.cybertek.enums.OrderStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "orders")
+@Where(clause = "is_deleted=false")
 public class Order extends BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
