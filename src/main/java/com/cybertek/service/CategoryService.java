@@ -1,6 +1,7 @@
 package com.cybertek.service;
 
 import com.cybertek.model.Category;
+import com.cybertek.model.SubCategory;
 import com.cybertek.repository.CategoryRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -12,14 +13,18 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final SubCategoryService subCategoryService;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, SubCategoryService subCategoryService) {
         this.categoryRepository = categoryRepository;
+        this.subCategoryService = subCategoryService;
     }
 
     public Category create(Category category) throws Exception {
-        categoryRepository.findByName(category.getName())
-                .orElseThrow(() -> new Exception("Already exist"));
+        Optional<Category> foundedCategory = categoryRepository.findByName(category.getName());
+
+        if(foundedCategory.isPresent())
+            throw new Exception("Category Already exist");
         return categoryRepository.save(category);
     }
 
@@ -35,7 +40,7 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public List<Category> readALl(){
+    public List<Category> readAll(){
         return  categoryRepository.findAll(Sort.by("name"));
 
     }
@@ -48,12 +53,14 @@ public class CategoryService {
 
 
         Category foundedCategory = categoryRepository.findById(id).orElseThrow(() -> new Exception("category doesn't exist"));
+        List<SubCategory> subCategories = subCategoryService.readAllByCategory(foundedCategory);
+
+       if( subCategories.size()>0 ) {
+           throw new Exception("This category can not be deleted");
+       }
 
         foundedCategory.setName(foundedCategory.getName()+"-"+foundedCategory.getId());
         foundedCategory.setIsDeleted(true);
         categoryRepository.save(foundedCategory);
-
-        // TODO Check this category is linked subcategories
-
     }
 }
