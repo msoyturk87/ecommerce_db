@@ -1,6 +1,7 @@
 package com.cybertek.service;
 
 import com.cybertek.model.Category;
+import com.cybertek.model.Product;
 import com.cybertek.model.SubCategory;
 import com.cybertek.repository.SubCategoryRepository;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import java.util.Optional;
 @Service
 public class SubCategoryService {
     private final SubCategoryRepository subCategoryRepository;
+    private final ProductService productService;
 
-    public SubCategoryService(SubCategoryRepository subCategoryRepository) {
+    public SubCategoryService(SubCategoryRepository subCategoryRepository, ProductService productService) {
         this.subCategoryRepository = subCategoryRepository;
+        this.productService = productService;
     }
 
     public SubCategory create(SubCategory subCategory) throws Exception {
@@ -49,8 +52,14 @@ public class SubCategoryService {
     public void delete(Integer id) throws Exception {
         SubCategory foundedSubCategory = subCategoryRepository.findById(id).orElseThrow(() -> new Exception("This subCategory does not exist "));
 
-        foundedSubCategory.setName(foundedSubCategory.getName()+"-"+foundedSubCategory.getId());
 
+        List<Product> products = productService.readAllBySubCategory(foundedSubCategory);
+
+        if( products.size()>0 ) {
+            throw new Exception("This subCategory can not be deleted");
+        }
+
+        foundedSubCategory.setName(foundedSubCategory.getName()+"-"+foundedSubCategory.getId());
         foundedSubCategory.setIsDeleted(true);
         subCategoryRepository.save(foundedSubCategory);
     }
