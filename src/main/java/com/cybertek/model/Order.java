@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "orders")
-@Where(clause = "is_deleted=false")
+// no need @Where because no delete option
 public class Order extends BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)

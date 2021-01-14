@@ -3,9 +3,10 @@ package com.cybertek.service;
 import com.cybertek.model.Order;
 import com.cybertek.repository.OrderRepository;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class OrderService {
 
     private final OrderRepository orderRepository;

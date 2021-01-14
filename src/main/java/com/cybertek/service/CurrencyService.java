@@ -23,7 +23,7 @@ public class CurrencyService {
 
     public Currency create(Currency currency) throws Exception {
 
-        Optional<Currency> foundedCurrency = currencyRepository.findByName(currency.getName());  // 1- findByName
+        Optional<Currency> foundedCurrency = currencyRepository.findByName(currency.getName());
 
         if(foundedCurrency.isPresent()) {
             throw new Exception(currency.getName()+" already exist.You can not create! "); // 2-  best practice ?
