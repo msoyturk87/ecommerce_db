@@ -62,7 +62,6 @@ public class CurrencyService {
             throw new Exception("This Currency can not be deleted");
         }
 
-
         foundedCurrency.setName(foundedCurrency.getName()+"-"+foundedCurrency.getId());
         foundedCurrency.setIsDeleted(true);
         currencyRepository.save(foundedCurrency);
