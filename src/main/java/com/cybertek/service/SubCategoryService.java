@@ -55,6 +55,8 @@ public class SubCategoryService {
 
         List<Product> products = productService.readAllBySubCategory(foundedSubCategory);
 
+        // TODO verify this link
+
         if( products.size()>0 ) {
             throw new Exception("This subCategory can not be deleted");
         }
