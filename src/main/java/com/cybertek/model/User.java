@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -16,18 +13,25 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
+// no need @Where because no delete option
 public class User extends BaseEntity<Long>{
 
     private String firstName;
     private String lastName;
 
     private LocalDate birthDate;
-    // no need to columnDef as a DATE in this
+    // no need to columnDef as a DATE in this cause of Java 8
     @Enumerated(EnumType.STRING)
     private Status status;
+
     private String phoneNumber;
+
+    @Column(unique = true,nullable = false)
     private String userName;
+
+    @Column(unique = true,nullable = false)
     private String email;
+
     private String password;
 
 
