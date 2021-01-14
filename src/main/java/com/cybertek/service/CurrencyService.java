@@ -1,9 +1,7 @@
 package com.cybertek.service;
 
-import com.cybertek.model.Category;
 import com.cybertek.model.Currency;
-import com.cybertek.model.SubCategory;
-import com.cybertek.model.Uom;
+import com.cybertek.model.Product;
 import com.cybertek.repository.CurrencyRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,9 +13,11 @@ import java.util.Optional;
 public class CurrencyService {
 
     private final CurrencyRepository currencyRepository;
+    private final ProductService productService;
 
-    public CurrencyService(CurrencyRepository currencyRepository) {
+    public CurrencyService(CurrencyRepository currencyRepository, ProductService productService) {
         this.currencyRepository = currencyRepository;
+        this.productService = productService;
     }
 
 
@@ -57,7 +57,10 @@ public class CurrencyService {
 
         Currency foundedCurrency = currencyRepository.findById(id).orElseThrow(() -> new Exception("Currency doesn't exist"));
 
-        //TODO Add new statement for is there any link with product
+        List<Product> products = productService.readAllByCurrency(foundedCurrency);
+        if(products.size()>0){
+            throw new Exception("This Currency can not be deleted");
+        }
 
 
         foundedCurrency.setName(foundedCurrency.getName()+"-"+foundedCurrency.getId());

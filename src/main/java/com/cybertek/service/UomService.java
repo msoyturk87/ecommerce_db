@@ -1,7 +1,6 @@
 package com.cybertek.service;
 
-import com.cybertek.model.Category;
-import com.cybertek.model.SubCategory;
+import com.cybertek.model.Product;
 import com.cybertek.model.Uom;
 import com.cybertek.repository.UomRepository;
 import org.springframework.data.domain.Sort;
@@ -14,9 +13,11 @@ import java.util.Optional;
 public class UomService {
 
     private final UomRepository uomRepository;
+    private final ProductService productService;
 
-    public UomService(UomRepository uomRepository) {
+    public UomService(UomRepository uomRepository, ProductService productService) {
         this.uomRepository = uomRepository;
+        this.productService = productService;
     }
 
     public Uom create(Uom uom) throws Exception {
@@ -53,8 +54,11 @@ public class UomService {
     public void deleteById(Integer id) throws Exception {
 
         Uom foundedUom=uomRepository.findById(id).orElseThrow(()-> new Exception("Uom doesn't exist"));
-        //TODO Add new statement for is there any link with product
+        List<Product> products = productService.readAllByUom(foundedUom);
 
+        if(products.size()>0) {
+            throw new Exception("This Uom can not be deleted");
+        }
         foundedUom.setName(foundedUom.getName()+"-"+foundedUom.getId());
         foundedUom.setIsDeleted(true);
         uomRepository.save(foundedUom);

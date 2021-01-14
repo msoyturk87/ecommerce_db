@@ -1,9 +1,7 @@
 package com.cybertek.service;
 
 import com.cybertek.enums.Status;
-import com.cybertek.model.Category;
-import com.cybertek.model.Product;
-import com.cybertek.model.SubCategory;
+import com.cybertek.model.*;
 import com.cybertek.repository.ProductRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -42,8 +40,16 @@ public class ProductService {
     }
     public List<Product> readAllBySubCategory(SubCategory subCategory){
 
-        return productRepository.findAllBySubCategory(subCategory);
+        return productRepository.findAllBySubCategoryId(subCategory.getId());
     }
 
 
+    public List<Product> readAllByUom(Uom foundedUom) {
+        return productRepository.findByUom(foundedUom);
+    }
+
+    public List<Product> readAllByCurrency(Currency foundedCurrency) {
+
+        return productRepository.findByCurrency(foundedCurrency);
+    }
 }
