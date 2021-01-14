@@ -22,6 +22,8 @@ public class ProductService {
     }
 
     public void update(Product product){
+
+        //productRepository.findByWhat
         // TODO We should talk about this part to take data from db (unique)
     }
 
@@ -38,6 +40,7 @@ public class ProductService {
 
         return productRepository.findById(id).orElse(null);
     }
+
     public List<Product> readAllBySubCategory(SubCategory subCategory){
 
         return productRepository.findAllBySubCategoryId(subCategory.getId());
