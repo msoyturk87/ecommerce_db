@@ -36,7 +36,7 @@ public class UserService {
         User foundedUser = userRepository.findByUserNameOrEmail(user.getUserName(),user.getEmail())
                 .orElseThrow(()->new Exception("There is no user to update"));
 
-     /*   if(!foundedUser.getEmail().equals(user.getEmail())){
+        /* if(!foundedUser.getEmail().equals(user.getEmail())){
             //TODO check for confirmation email
         }*/
 
@@ -53,11 +53,11 @@ public class UserService {
 
     public List<User> readAll(){
 
-        return userRepository.findAll(Sort.by("id"));
+        return userRepository.findAll(Sort.by("id")); // This part will be only variable name
     }
 
     @Transactional
-    public void deactiveAccount(Long id) throws Exception {
+    public void deactivateAccount(Long id) throws Exception {
 
         User foundedUser = userRepository.findById(id).orElseThrow(() -> new Exception("user does not exist"));
 

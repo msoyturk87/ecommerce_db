@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class Order extends BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus=OrderStatus.IN_PROGRESS;
+    private OrderStatus orderStatus=OrderStatus.IN_PROGRESS; // default value of orderStatus
 
     private LocalDate orderDate;
 

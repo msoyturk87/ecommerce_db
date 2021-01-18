@@ -5,13 +5,12 @@ import com.cybertek.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -26,8 +25,10 @@ public class Product extends BaseEntity<Long>{
     @Column(columnDefinition = "text")
     private String description;
 
+    @DecimalMin("0.00")
     private BigDecimal price;
 
+    @Positive
     private Integer quantity;
 
     private BigDecimal volume;

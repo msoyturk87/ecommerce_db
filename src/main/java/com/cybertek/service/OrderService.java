@@ -1,6 +1,8 @@
 package com.cybertek.service;
 
+import com.cybertek.enums.OrderStatus;
 import com.cybertek.model.Order;
+import com.cybertek.model.User;
 import com.cybertek.repository.OrderRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,11 @@ public class OrderService {
     public List<Order> readAll(){
 
         return orderRepository.findAll(Sort.by("orderDate")); // maybe user_id but not necessary I think
+
+    }
+
+    public List<Order> readByUserAndStatus(User user, OrderStatus status){
+        return orderRepository.findByUserAndStatus(user,status);
 
     }
 

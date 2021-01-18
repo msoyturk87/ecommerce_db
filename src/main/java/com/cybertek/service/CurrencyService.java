@@ -23,17 +23,17 @@ public class CurrencyService {
 
     public Currency create(Currency currency) throws Exception {
 
-        Optional<Currency> foundedCurrency = currencyRepository.findByName(currency.getName());// update with symbol
+        Optional<Currency> foundedCurrency = currencyRepository.findByNameAndSymbol(currency.getName(),currency.getSymbol());
 
         if(foundedCurrency.isPresent()) {
-            throw new Exception(currency.getName()+" already exist.You can not create! "); // 2-  best practice ?
+            throw new Exception(currency.getName()+" already exist.You can not create! ");
         }
-        return currencyRepository.save(currency); // 3- ask this part about return part
+        return currencyRepository.save(currency);
     }
 
     public void update(Currency currency) throws Exception {
 
-        Optional<Currency> foundedCurrency = currencyRepository.findByName(currency.getName());
+        Optional<Currency> foundedCurrency = currencyRepository.findByNameAndSymbol(currency.getName(), currency.getSymbol());
         if(foundedCurrency.isEmpty())
             throw new Exception(currency.getName()+"  does not exist ");
 
@@ -47,15 +47,20 @@ public class CurrencyService {
 
     }
 
-    public Currency readById(Integer id){
+    public Currency readById(Integer id) throws Exception {
 
-        return currencyRepository.findById(id).orElse(null);
+        return currencyRepository.findById(id).orElseThrow(()->new Exception("Currency doesn't exist"));
+    }
+
+    public Currency readByName(String name) throws Exception {
+
+        return currencyRepository.findByName(name).orElseThrow(()->new Exception("Currency doesn't exist"));
     }
 
     public void deleteById(Integer id) throws Exception {
 
 
-        Currency foundedCurrency = currencyRepository.findById(id).orElseThrow(() -> new Exception("Currency doesn't exist"));
+        Currency foundedCurrency = readById(id);
 
         List<Product> products = productService.readAllByCurrency(foundedCurrency);
         if(products.size()>0){
@@ -63,6 +68,7 @@ public class CurrencyService {
         }
 
         foundedCurrency.setName(foundedCurrency.getName()+"-"+foundedCurrency.getId());
+        foundedCurrency.setSymbol(foundedCurrency.getSymbol()+"-"+foundedCurrency.getId());
         foundedCurrency.setIsDeleted(true);
         currencyRepository.save(foundedCurrency);
     }
