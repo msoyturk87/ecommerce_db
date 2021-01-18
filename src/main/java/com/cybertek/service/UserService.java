@@ -1,10 +1,12 @@
 package com.cybertek.service;
 
+import com.cybertek.enums.Status;
 import com.cybertek.model.User;
 import com.cybertek.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +19,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
+    @Transactional
     public User create(User user) throws Exception {
-        Optional<User> foundedUser = userRepository.findByUserName(user.getUserName());
+        Optional<User> foundedUser = userRepository.findByUserNameOrEmail(user.getUserName(),user.getEmail());
 
         if(foundedUser.isPresent()){
 
@@ -29,28 +31,38 @@ public class UserService {
        return  userRepository.save(user);
 
     }
-
+    @Transactional
     public void update(User user) throws Exception {
-        Optional<User> foundedUser = userRepository.findByUserName(user.getUserName());
+        User foundedUser = userRepository.findByUserNameOrEmail(user.getUserName(),user.getEmail())
+                .orElseThrow(()->new Exception("There is no user to update"));
 
-        if(foundedUser.isEmpty()){
+     /*   if(!foundedUser.getEmail().equals(user.getEmail())){
+            //TODO check for confirmation email
+        }*/
 
-            throw new Exception("There is no user to update");
-        }
-
-        user.setId(foundedUser.get().getId());
+        user.setId(foundedUser.getId());
 
         userRepository.save(user);
 
     }
 
-    public User readByUsername(String username){
+    public User readByUsername(String username) throws Exception {
 
-        return userRepository.findByUserName(username).orElse(null);
+        return userRepository.findByUserName(username).orElseThrow(()->new Exception("User does not exist"));
     }
 
     public List<User> readAll(){
 
-        return userRepository.findAll(Sort.by("user_id"));
+        return userRepository.findAll(Sort.by("id"));
+    }
+
+    @Transactional
+    public void deactiveAccount(Long id) throws Exception {
+
+        User foundedUser = userRepository.findById(id).orElseThrow(() -> new Exception("user does not exist"));
+
+        foundedUser.setStatus(Status.SUSPENDED);
+        userRepository.save(foundedUser);
+
     }
 }

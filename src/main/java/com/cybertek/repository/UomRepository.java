@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface UomRepository extends JpaRepository<Uom,Integer> {
 
     Optional<Uom> findByName(String name);
-
 }

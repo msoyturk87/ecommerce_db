@@ -32,13 +32,8 @@ public class UomService {
 
     public void update(Uom uom) throws Exception {
 
-        Optional<Uom> foundedUom = uomRepository.findByName(uom.getName());
-
-        if(foundedUom.isEmpty()) {
-            throw new Exception("This Uom does not exist");
-        }
-        uom.setId(foundedUom.get().getId());
-
+        Uom foundedUom = uomRepository.findByName(uom.getName()).orElseThrow(()->new Exception("There is no Uom"));
+        uom.setId(foundedUom.getId());
         uomRepository.save(uom);
     }
 
@@ -47,13 +42,13 @@ public class UomService {
 
     }
 
-    public Uom readById(Integer id){
-        return uomRepository.findById(id).orElse(null);
+    public Uom readById(Integer id) throws Exception {
+        return uomRepository.findById(id).orElseThrow(()->new Exception("There is no Uom to update "));
     }
 
     public void deleteById(Integer id) throws Exception {
 
-        Uom foundedUom=uomRepository.findById(id).orElseThrow(()-> new Exception("Uom doesn't exist"));
+        Uom foundedUom=readById(id);
         List<Product> products = productService.readAllByUom(foundedUom);
 
         if(products.size()>0) {

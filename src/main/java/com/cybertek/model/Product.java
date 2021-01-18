@@ -18,7 +18,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "products")
-@Where(clause = "is_deleted=false")
 public class Product extends BaseEntity<Long>{
 
     @Column(nullable = false)

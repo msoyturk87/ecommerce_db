@@ -23,7 +23,7 @@ public class ProductService {
 
     public void update(Product product){
 
-        //productRepository.findByWhat
+        //productRepository.findById Ok it is good
         // TODO We should talk about this part to take data from db (unique)
     }
 
