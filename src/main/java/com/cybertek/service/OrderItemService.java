@@ -3,28 +3,36 @@ package com.cybertek.service;
 import com.cybertek.enums.OrderStatus;
 import com.cybertek.model.Order;
 import com.cybertek.model.OrderItem;
+import com.cybertek.model.User;
+import com.cybertek.model.dto.CustomOrderItemDTO;
 import com.cybertek.repository.OrderItemRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
     private final OrderService orderService;
+    private final UserService userService;
 
+    public OrderItemService(OrderItemRepository orderItemRepository, OrderService orderService,
+                            UserService userService) {
 
-    public OrderItemService(OrderItemRepository orderItemRepository, OrderService orderService) {
         this.orderItemRepository = orderItemRepository;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
 
     public OrderItem create(OrderItem orderItem) throws Exception {
 
-
+        //TODO get the current user froum securityContextholder
+        // instedad of "orderItem.getOrder().getUser()" add current user
         List<Order> orders = orderService.readByUserAndStatus(orderItem.getOrder().getUser(), OrderStatus.IN_PROGRESS);
 
         if(orders.size()>0){
@@ -32,20 +40,44 @@ public class OrderItemService {
             orderItem.setOrder(currentOrder); // cascade will know that
         }
 
-        /*Optional<OrderItem> foundedOrderItem=orderItemRepository.findById(orderItem.getId());
+        //TODO get the current user froum securityContextholder
+        // instedad of "orderItem.getOrder().getUser()" add current user
+        Optional<OrderItem> foundedItem=orderItemRepository.findAllByProductIdAndOrderUserIdAndOrderStatus(orderItem.getProduct().getId(),
+                orderItem.getOrder().getUser().getId(),
+                OrderStatus.IN_PROGRESS);
 
-        if(foundedOrderItem.isPresent()){
+        if(foundedItem.isPresent()){
 
-            throw new Exception("This order item already exists");
-        }*/
+            foundedItem.get().setPrice(orderItem.getPrice());
+            foundedItem.get().setQuantity(orderItem.getQuantity());
+            return orderItemRepository.save(foundedItem.get());
+        }
 
-        return null;
+
+
+        return orderItemRepository.save(orderItem);
     }
 
-    public void update(OrderItem orderItem){
+    public List<OrderItem> buildOrderItems(CustomOrderItemDTO orderItemsDTO) throws Exception {
 
-        // TODO We should talk about this part to take data from db (unique)
+        User currentUser = userService.readByEmail("admin@admin.com");
+        List<Order> orders = orderService.readByUserAndStatus(currentUser, OrderStatus.IN_PROGRESS);
 
+        Order currentOrder = orders.get(0);
+        currentOrder.setBilling(orderItemsDTO.getBilling());
+        currentOrder.setShipping(orderItemsDTO.getShipping());
+        currentOrder.setOrderStatus(OrderStatus.APPROVED);
+
+        List<OrderItem> orderItems =
+                orderItemsDTO.getOrderItem().stream().peek(orderItem -> {
+
+                    currentOrder.setTotalPrice(currentOrder.getTotalPrice().add(orderItem.getPrice()));
+                    orderItem.setOrderStatus(OrderStatus.APPROVED);
+                    orderItem.setOrder(currentOrder);
+
+                }).collect(Collectors.toList());
+
+        return orderItemRepository.saveAll(orderItems);
     }
 
     public OrderItem readById(Long id) throws Exception {

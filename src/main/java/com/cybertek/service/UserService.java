@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -46,6 +47,8 @@ public class UserService {
 
     }
 
+
+
     public User readByUsername(String username) throws Exception {
 
         return userRepository.findByUserName(username).orElseThrow(()->new Exception("User does not exist"));
@@ -65,4 +68,7 @@ public class UserService {
         userRepository.save(foundedUser);
 
     }
-}
+    public User readByEmail(String email){
+        return userRepository.findByUserName(email)
+                .orElseThrow(() -> new NoSuchElementException("This user does not exist"));
+    }}

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -25,4 +26,15 @@ public class Order extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "shipping_id")
+    private ShipBill shipping;
+
+    @ManyToOne
+    @JoinColumn(name = "billing_id")
+    private ShipBill billing;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice;
 }
